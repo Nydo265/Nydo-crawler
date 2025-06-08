@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #msg {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔒 Enter Password</h2>
+    <input type="password" id="password" placeholder="Enter password">
+    <button onclick="authenticate()">Login</button>
+    <div id="msg"></div>
+  </div>
+
+  <script>
+    function authenticate() {
+      const pwd = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
+      msg.textContent = "";
+
+      fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pwd })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = "/view";
+        } else {
+          msg.textContent = data.message || "Authentication failed.";
+        }
+      })
+      .catch(() => msg.textContent = "Server error.");
+    }
+  </script>
+</body>
+</html>
