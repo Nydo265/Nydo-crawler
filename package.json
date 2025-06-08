@@ -1,0 +1,21 @@
+{
+  "name": "Nydo crawler",
+  "version": "2.5",
+  "description": "Node.js app with authentication for Railway deployment",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "authentication",
+    "railway"
+  ],
+  "author": "Nydo",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  }
+}
