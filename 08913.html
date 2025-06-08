@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Secure PDF Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    iframe {
+      border: none;
+    }
+    #message {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="form">
+    <h3>Enter Reg Number</h3>
+    <input type="number" id="regNumber" placeholder="e.g. 1234">
+    <button onclick="fetchPDF()">Submit</button>
+    <div id="message"></div>
+  </div>
+
+  <div id="pdfContainer" style="display:none;"></div>
+
+  <script>
+    function fetchPDF() {
+      const reg = document.getElementById("regNumber").value.trim();
+      const msg = document.getElementById("message");
+      msg.textContent = "";
+
+      if (!reg) {
+        msg.textContent = "⚠️ Please enter reg number.";
+        return;
+      }
+
+      fetch("/api/get-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reg })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          msg.textContent = data.message;
+        } else {
+          document.getElementById("form").style.display = "none";
+          const iframe = `<iframe src="${data.viewer}" style="width:100%; height:90vh;"></iframe><br><button onclick='goBack()'>🔙 Back</button>`;
+          const container = document.getElementById("pdfContainer");
+          container.innerHTML = iframe;
+          container.style.display = "block";
+        }
+      })
+      .catch(() => msg.textContent = "❌ Server unreachable.");
+    }
+
+    function goBack() {
+      document.getElementById("pdfContainer").style.display = "none";
+      document.getElementById("form").style.display = "block";
+    }
+  </script>
+</body>
+</html>
